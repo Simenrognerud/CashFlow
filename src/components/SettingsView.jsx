@@ -11,7 +11,7 @@ export default function SettingsView({ profile, taxRates, reload }) {
       <h1>Innstillinger</h1>
       <ProfileCard profile={profile} reload={reload} />
       <TaxCard taxRates={taxRates} reload={reload} />
-      <CalendarFeedCard profile={profile} />
+      <CalendarFeedCard profile={profile} reload={reload} />
       <button className="btn ghost" onClick={() => api.signOut()}>Logg ut</button>
     </div>
   );
@@ -123,7 +123,7 @@ function TaxCard({ taxRates, reload }) {
   );
 }
 
-function CalendarFeedCard({ profile }) {
+function CalendarFeedCard({ profile, reload }) {
   const url = api.feedUrl(profile);
   const [copied, setCopied] = useState(false);
 
@@ -143,6 +143,12 @@ function CalendarFeedCard({ profile }) {
             setTimeout(() => setCopied(false), 1500);
           }}>{copied ? 'Kopiert ✓' : 'Kopier lenke'}</button>
           <p className="muted tiny">Fungerer ikke knappen? Innstillinger → Kalender → Kontoer → Legg til konto → Annet → Legg til abonnert kalender, og lim inn lenken.</p>
+          <p className="muted tiny">Lenken er hemmelig: alle som har den, kan se vaktene dine. Har du delt den ved et uhell, lag en ny – da slutter den gamle å virke (du må abonnere på nytt).</p>
+          <button className="btn ghost danger" onClick={async () => {
+            if (!confirm('Lage ny lenke? Den gamle slutter å virke, og du må abonnere på nytt i Kalender.')) return;
+            await api.updateProfile({ feed_token: crypto.randomUUID() });
+            reload();
+          }}>Lag ny hemmelig lenke</button>
         </>
       ) : (
         <p className="demo-note small">Tilgjengelig når appen er koblet til Supabase (ikke i demo-modus).</p>

@@ -19,7 +19,8 @@ function addDay(date: string) {
   return d.toISOString().slice(0, 10);
 }
 
-const escape = (s: string) => s.replace(/[\\;,]/g, (c) => '\\' + c).replace(/\n/g, '\\n');
+// Escape ICS-tegn og fjern linjeskift helt, så et vaktnavn ikke kan legge til egne linjer i feeden.
+const escape = (s: string) => s.replace(/[\r\n]+/g, ' ').replace(/[\\;,]/g, (c) => '\\' + c).slice(0, 100);
 
 Deno.serve(async (req) => {
   const token = new URL(req.url).searchParams.get('token') ?? '';

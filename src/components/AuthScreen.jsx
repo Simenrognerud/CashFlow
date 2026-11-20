@@ -15,8 +15,8 @@ export default function AuthScreen() {
       setError('Brukernavn: 3–30 tegn, bare bokstaver (a–z), tall, punktum, bindestrek og understrek.');
       return;
     }
-    if (!api.demo && password.length < 6) {
-      setError('Passordet må være minst 6 tegn.');
+    if (!api.demo && mode === 'signup' && password.length < 10) {
+      setError('Passordet må være minst 10 tegn.');
       return;
     }
     setBusy(true);
